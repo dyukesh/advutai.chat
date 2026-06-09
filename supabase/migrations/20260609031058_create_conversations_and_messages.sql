@@ -1,0 +1,77 @@
+/*
+# Create conversations and messages tables (single-tenant, no auth)
+
+1. New Tables
+- `conversations`
+  - `id` (uuid, primary key)
+  - `title` (text, not null, default 'New Chat')
+  - `created_at` (timestamptz, default now())
+  - `updated_at` (timestamptz, default now())
+- `messages`
+  - `id` (uuid, primary key)
+  - `conversation_id` (uuid, not null, references conversations.id on delete cascade)
+  - `role` (text, not null — 'user' or 'assistant')
+  - `content` (text, not null)
+  - `created_at` (timestamptz, default now())
+
+2. Indexes
+- Index on messages.conversation_id for fast message lookup per conversation
+- Index on conversations.updated_at for sorting by recency
+
+3. Security
+- Enable RLS on both tables.
+- Allow anon + authenticated full CRUD because this is a single-tenant chatbot with no user accounts.
+*/
+
+CREATE TABLE IF NOT EXISTS conversations (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL DEFAULT 'New Chat',
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id uuid NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+  role text NOT NULL CHECK (role IN ('user', 'assistant')),
+  content text NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_conversations_updated_at ON conversations(updated_at DESC);
+
+ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "anon_select_conversations" ON conversations;
+CREATE POLICY "anon_select_conversations" ON conversations FOR SELECT
+  TO anon, authenticated USING (true);
+
+DROP POLICY IF EXISTS "anon_insert_conversations" ON conversations;
+CREATE POLICY "anon_insert_conversations" ON conversations FOR INSERT
+  TO anon, authenticated WITH CHECK (true);
+
+DROP POLICY IF EXISTS "anon_update_conversations" ON conversations;
+CREATE POLICY "anon_update_conversations" ON conversations FOR UPDATE
+  TO anon, authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "anon_delete_conversations" ON conversations;
+CREATE POLICY "anon_delete_conversations" ON conversations FOR DELETE
+  TO anon, authenticated USING (true);
+
+DROP POLICY IF EXISTS "anon_select_messages" ON messages;
+CREATE POLICY "anon_select_messages" ON messages FOR SELECT
+  TO anon, authenticated USING (true);
+
+DROP POLICY IF EXISTS "anon_insert_messages" ON messages;
+CREATE POLICY "anon_insert_messages" ON messages FOR INSERT
+  TO anon, authenticated WITH CHECK (true);
+
+DROP POLICY IF EXISTS "anon_update_messages" ON messages;
+CREATE POLICY "anon_update_messages" ON messages FOR UPDATE
+  TO anon, authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "anon_delete_messages" ON messages;
+CREATE POLICY "anon_delete_messages" ON messages FOR DELETE
+  TO anon, authenticated USING (true);
