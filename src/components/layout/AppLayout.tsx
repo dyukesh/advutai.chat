@@ -1,16 +1,19 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../store';
-import { MessageSquare, FolderKanban, SquareCheck as CheckSquare, Brain, Search, FileText, PenTool, Settings, CreditCard, ChartBar as BarChart3, Menu, LogOut, Sparkles, ChevronLeft, Users } from 'lucide-react';
+import { MessageSquare, FolderKanban, SquareCheck as CheckSquare, Brain, Search, FileText, PenTool, Settings, CreditCard, ChartBar as BarChart3, Menu, LogOut, Sparkles, ChevronLeft, Users, Code as Code2, Image, Mic } from 'lucide-react';
 import clsx from 'clsx';
 
 const NAV_ITEMS = [
   { to: '/chat', icon: MessageSquare, label: 'Chat' },
+  { to: '/code', icon: Code2, label: 'Code Assistant' },
   { to: '/workspace', icon: FolderKanban, label: 'Workspace' },
   { to: '/tasks', icon: CheckSquare, label: 'Tasks' },
   { to: '/memory', icon: Brain, label: 'Memory' },
   { to: '/research', icon: Search, label: 'Research' },
   { to: '/files', icon: FileText, label: 'Files' },
   { to: '/content', icon: PenTool, label: 'Content Studio' },
+  { to: '/image-gen', icon: Image, label: 'Images' },
+  { to: '/voice', icon: Mic, label: 'Voice' },
   { to: '/team', icon: Users, label: 'Team' },
 ];
 

@@ -4,12 +4,15 @@ import { useAppStore } from './store';
 import { AppLayout } from './components/layout/AppLayout';
 import { AuthPage } from './components/auth/AuthPage';
 import { ChatPage } from './pages/ChatPage';
+import { CodeAssistantPage } from './pages/CodeAssistantPage';
 import { WorkspacePage } from './pages/WorkspacePage';
 import { TasksPage } from './pages/TasksPage';
 import { MemoryPage } from './pages/MemoryPage';
 import { ResearchPage } from './pages/ResearchPage';
 import { FilesPage } from './pages/FilesPage';
 import { ContentStudioPage } from './pages/ContentStudioPage';
+import { ImageGenerationPage } from './pages/ImageGenerationPage';
+import { VoicePage } from './pages/VoicePage';
 import { TeamPage } from './pages/TeamPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { BillingPage } from './pages/BillingPage';
@@ -53,12 +56,15 @@ export default function App() {
         <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/chat" replace />} />
           <Route path="chat" element={<ChatPage />} />
+          <Route path="code" element={<CodeAssistantPage />} />
           <Route path="workspace" element={<WorkspacePage />} />
           <Route path="tasks" element={<TasksPage />} />
           <Route path="memory" element={<MemoryPage />} />
           <Route path="research" element={<ResearchPage />} />
           <Route path="files" element={<FilesPage />} />
           <Route path="content" element={<ContentStudioPage />} />
+          <Route path="image-gen" element={<ImageGenerationPage />} />
+          <Route path="voice" element={<VoicePage />} />
           <Route path="team" element={<TeamPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="billing" element={<BillingPage />} />
