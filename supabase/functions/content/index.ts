@@ -10,143 +10,311 @@ interface ContentRequest {
   type: string;
   prompt: string;
   tone: string;
-  context: string;
+  context?: string;
 }
 
-const TEMPLATES: Record<string, (prompt: string, tone: string) => string> = {
-  blog: (prompt, tone) => `# ${prompt}
+function generateBlog(prompt: string, tone: string): string {
+  return `# ${prompt}
 
-In today's rapidly evolving landscape, understanding ${prompt.toLowerCase()} has become more important than ever. This article explores the key aspects and provides actionable insights.
-
-## The Current Landscape
-
-The world of ${prompt.toLowerCase()} is undergoing significant transformation. Organizations and individuals alike are recognizing the need to adapt and evolve their approaches.
-
-## Key Considerations
-
-1. **Understanding the fundamentals** — Before diving deep, it's essential to grasp the core concepts that underpin ${prompt.toLowerCase()}.
-
-2. **Practical applications** — Theory without practice is incomplete. Here's how you can apply these concepts in real-world scenarios.
-
-3. **Future outlook** — What trends are shaping the future? Staying ahead requires anticipation and preparation.
-
-## Best Practices
-
-- Start with a clear strategy and defined goals
-- Measure progress with meaningful metrics
-- Iterate and refine your approach based on results
-- Stay informed about the latest developments
-
-## Conclusion
-
-${prompt} represents both a challenge and an opportunity. By approaching it with the right mindset and tools, you can unlock significant value and drive meaningful outcomes.
+*Published on AdvutAI Content Studio | Tone: ${tone}*
 
 ---
 
-*Written by AdvutAI Content Studio in a ${tone} tone*`,
+In today's rapidly evolving landscape, understanding **${prompt.toLowerCase()}** has become essential for professionals and organizations alike. This article explores the key dimensions and provides actionable insights you can apply today.
 
-  email: (prompt, tone) => `Subject: ${prompt}
+## The Current State
 
-Dear [Recipient],
+The world of ${prompt.toLowerCase()} is experiencing a fundamental shift. What was once a niche concern has become a mainstream priority, driven by three converging forces:
 
-I hope this message finds you well. I'm writing to discuss ${prompt.toLowerCase()}.
+1. **Technology acceleration** — New tools and platforms are enabling capabilities that were impossible just two years ago
+2. **Market demand** — Users and customers now expect sophisticated, seamless experiences as a baseline
+3. **Competitive pressure** — Organizations that adapt quickly gain disproportionate advantages
 
-[Main content paragraph - adapt based on your specific needs]
+## Key Insights
 
-I believe this presents an excellent opportunity for [desired outcome]. The key benefits include:
+### Insight #1: The Fundamentals Still Matter
 
-- **Benefit 1**: [Description]
-- **Benefit 2**: [Description]
-- **Benefit 3**: [Description]
+Before chasing trends, ensure your foundation is solid. The organizations seeing the best results from ${prompt.toLowerCase()} are those that invested in:
 
-I'd love to discuss this further at your convenience. Would you be available for a brief call this week?
+- **Clear strategy** — Knowing what you're optimizing for prevents wasted effort
+- **Quality data** — Garbage in, garbage out applies to every domain
+- **Team alignment** — Shared understanding beats individual brilliance
 
-Please don't hesitate to reach out if you have any questions or need additional information.
+### Insight #2: Execution Beats Perfection
+
+The biggest mistake we see isn't getting things wrong — it's not shipping at all. The most successful implementations share these traits:
+
+- **MVP-first approach** — Launch with core value, iterate based on real feedback
+- **Measurement framework** — Define success metrics before you start
+- **Rapid iteration cycles** — Weekly improvements compound dramatically over quarters
+
+### Insight #3: The Human Element Is Non-Negotiable
+
+Technology enables, but people deliver. The best tools in the world fail without:
+
+- **User adoption** — Build for your actual users, not your ideal ones
+- **Skill development** — Invest in training alongside tooling
+- **Change management** — Communicate the why, not just the what
+
+## Practical Framework
+
+Here's a framework you can apply immediately:
+
+\`\`\`
+Step 1: Audit    →  Where are you now? (1 week)
+Step 2: Plan     →  Where do you want to be? (2 weeks)
+Step 3: Build    →  Create the minimum viable solution (4 weeks)
+Step 4: Measure  →  Track against your defined metrics (ongoing)
+Step 5: Iterate  →  Improve based on real data (2-week cycles)
+\`\`\`
+
+## What's Next
+
+The trajectory is clear: ${prompt.toLowerCase()} will continue to grow in importance. The question isn't whether to invest — it's how quickly you can start seeing returns.
+
+**Three things to do this week:**
+1. Assess your current state honestly
+2. Identify the single highest-impact improvement
+3. Commit to a 2-week sprint to implement it
+
+---
+
+*This article was generated by AdvutAI Content Studio. Want a version tailored to your specific audience or industry? Let us know.*`;
+}
+
+function generateEmail(prompt: string, tone: string): string {
+  return `**Subject:** ${prompt}
+
+---
+
+Dear [Recipient Name],
+
+I hope this finds you well. I'm reaching out regarding **${prompt.toLowerCase()}** and wanted to share some thoughts that I believe will be valuable for our next steps.
+
+## Context
+
+After reviewing the current situation, I've identified several key areas where we can make meaningful progress:
+
+1. **Immediate opportunity** — There's a clear path to [specific outcome] that we can pursue right now with minimal investment
+2. **Strategic alignment** — This initiative aligns directly with our [quarterly/annual] objectives around [goal area]
+3. **Competitive advantage** — Acting now positions us ahead of the curve while others are still evaluating
+
+## Proposal
+
+I'd like to propose the following approach:
+
+**Phase 1 (Week 1-2):** Discovery and alignment
+- Review current state and identify quick wins
+- Align stakeholders on objectives and success metrics
+- Establish communication cadence
+
+**Phase 2 (Week 3-6):** Implementation
+- Execute on the highest-impact items first
+- Weekly progress reviews with key stakeholders
+- Iterate based on early feedback
+
+**Phase 3 (Ongoing):** Optimization
+- Measure results against defined KPIs
+- Scale what works, cut what doesn't
+- Share learnings across the team
+
+## Ask
+
+I'd appreciate 30 minutes this week to discuss this in more detail. I'm confident that with the right focus, we can see meaningful results within the first month.
+
+Would **Tuesday or Thursday afternoon** work for a brief call?
 
 Best regards,
 [Your Name]
 
 ---
-*Generated by AdvutAI Content Studio in a ${tone} tone*`,
 
-  social: (prompt, tone) => {
-    const posts = [
-      `Excited to share insights on ${prompt}! Here's what I've learned:\n\n1. The fundamentals matter more than flashy tactics\n2. Consistency beats intensity\n3. Data-driven decisions win\n\nWhat's your take? 👇`,
-      `Just published: Everything you need to know about ${prompt}\n\nTL;DR:\n- It's changing fast\n- The basics still work\n- Adaptation is key\n\nRead the full breakdown in my latest article.`,
-      `Hot take on ${prompt}:\n\nMost people overcomplicate it. The secret? Focus on these 3 things:\n\n1. Clear strategy\n2. Consistent execution\n3. Continuous learning\n\nSimple, not easy.`,
-    ];
-    return posts[Math.floor(Math.random() * posts.length)] + `\n\n---\n*Generated by AdvutAI Content Studio in a ${tone} tone*`;
-  },
+*Generated by AdvutAI Content Studio | Tone: ${tone}*`;
+}
 
-  marketing: (prompt, tone) => `# ${prompt}
+function generateSocial(prompt: string, tone: string): string {
+  return `## Social Media Posts for: ${prompt}
 
-## Headline Options
-1. "Transform Your Approach to ${prompt}"
-2. "The Complete Guide to ${prompt}"
-3. "Unlock the Power of ${prompt}"
+---
+
+### Post 1 — Hook/Thought Leadership
+${prompt} is changing faster than most people realize.
+
+Here's what nobody is talking about:
+
+The fundamentals haven't changed — but the execution gap is widening.
+
+Those who nail the basics AND leverage new tools are pulling ahead at an unprecedented rate.
+
+The good news? It's not too late to catch up.
+
+Here's where to start ↓
+
+### Post 2 — Value/How-To
+3 things I wish I knew about ${prompt.toLowerCase()} sooner:
+
+1. Start with strategy, not tools
+   → Define your outcome before choosing your approach
+
+2. Measure what matters, not what's easy
+   → Vanity metrics feel good. Business metrics pay bills.
+
+3. Iteration beats perfection
+   → Ship weekly. Improve daily. Rest on Sundays.
+
+Save this for your next planning session.
+
+### Post 3 — Engagement/Question
+Hot take: Most ${prompt.toLowerCase()} advice is outdated within 6 months.
+
+The only things that stay constant:
+✓ Clear thinking
+✓ Fast execution
+✓ Real user feedback
+
+What's the one principle that's stayed true for you?
+
+Drop it in the replies 👇
+
+---
+
+*Generated by AdvutAI Content Studio | Tone: ${tone}*`;
+}
+
+function generateMarketing(prompt: string, tone: string): string {
+  return `# Marketing Copy: ${prompt}
+
+---
+
+## Hero Headlines (A/B Test Ready)
+
+**Option A:** "Master ${prompt} — Before Your Competitors Do"
+**Option B:** "The ${prompt} Advantage You've Been Missing"
+**Option C:** "Stop Guessing. Start Winning at ${prompt}."
 
 ## Value Proposition
-Discover how ${prompt.toLowerCase()} can revolutionize your workflow, boost productivity, and deliver measurable results.
+
+Transform how you approach **${prompt.toLowerCase()}**. Our solution delivers measurable results in weeks, not months — with the simplicity your team needs and the power your business demands.
 
 ## Key Benefits
-- **Save Time**: Automate and streamline your processes
-- **Increase Quality**: Deliver better outcomes with less effort
-- **Scale Effectively**: Grow without proportional cost increases
-- **Stay Competitive**: Keep pace with industry leaders
 
-## Call to Action
-Ready to transform how you approach ${prompt}? Get started today and see results within the first week.
+| Benefit | Before | After |
+|---------|--------|-------|
+| Speed | Weeks to implement | Days to deploy |
+| Cost | High upfront investment | Predictable monthly pricing |
+| Results | Hope-based | Data-driven |
+| Scale | Manual bottleneck | Automated growth |
 
 ## Social Proof
-> "Implementing these strategies for ${prompt.toLowerCase()} changed our entire approach. Results exceeded expectations." — Industry Leader
+
+> "We saw a 3x improvement in our ${prompt.toLowerCase()} outcomes within the first 30 days. The ROI was undeniable." — VP of Strategy, Fortune 500
+
+## Feature Highlights
+
+- **Smart Automation** — Eliminate repetitive tasks and focus on high-impact work
+- **Real-Time Analytics** — Know exactly what's working and what to change
+- **Team Collaboration** — Built for teams that move fast together
+- **Enterprise Security** — SOC 2 compliant with role-based access
+
+## Call to Action
+
+**Primary CTA:** "Start Free Trial" → No credit card required
+**Secondary CTA:** "Book a Demo" → 15-minute personalized walkthrough
+**Urgency CTA:** "Limited Time: Get 30% off your first 3 months"
+
+## Email Subject Line Options
+
+1. "The ${prompt} edge your competitors don't want you to know about"
+2. "3 reasons teams are switching their ${prompt.toLowerCase()} approach"
+3. "[First Name], your ${prompt.toLowerCase()} strategy needs an upgrade"
 
 ---
-*Generated by AdvutAI Content Studio in a ${tone} tone*`,
 
-  report: (prompt, tone) => `# ${prompt} — Strategic Report
+*Generated by AdvutAI Content Studio | Tone: ${tone}*`;
+}
+
+function generateReport(prompt: string, tone: string): string {
+  return `# Strategic Report: ${prompt}
+
+**Classification:** Internal — Executive Review
+**Date:** ${new Date().toISOString().split('T')[0]}
+**Prepared by:** AdvutAI Research Division
+
+---
 
 ## Executive Summary
-This report provides a comprehensive analysis of ${prompt.toLowerCase()}, including current trends, challenges, opportunities, and strategic recommendations.
 
-## Methodology
-Our analysis combines quantitative data analysis, industry expert interviews, and competitive benchmarking to deliver actionable insights.
+This report presents a comprehensive analysis of **${prompt.toLowerCase()}**, including market dynamics, strategic implications, and actionable recommendations for leadership review.
 
-## Findings
+**Key Finding:** The landscape for ${prompt.toLowerCase()} is at an inflection point. Organizations that act within the next 90 days will gain a significant first-mover advantage.
 
-### 1. Current State
-The landscape for ${prompt.toLowerCase()} is characterized by rapid evolution and increasing complexity. Key indicators show:
+## Market Context
 
-- Market growth: 15-25% annually
-- Adoption rate: Accelerating across sectors
-- Investment levels: Record highs in 2024-2025
+### Current State
+- Market size: Estimated $XXB globally (2025)
+- Growth rate: 18-25% CAGR
+- Key drivers: Digital transformation, regulatory changes, competitive pressure
+- Primary barriers: Skills gap, legacy infrastructure, organizational inertia
 
-### 2. Opportunities
-- **Emerging markets**: Significant untapped potential
-- **Technology integration**: New tools enable better outcomes
-- **Cross-sector applications**: Expanding use cases
-- **Talent development**: Growing expertise pool
+### Competitive Landscape
+- **Leaders** (2-3 players): Established with strong market position
+- **Challengers** (4-5 players): Growing rapidly with innovative approaches
+- **Emerging** (10+ players): Niche solutions targeting specific verticals
 
-### 3. Risks
-- Regulatory changes could impact operations
-- Market saturation in mature segments
-- Technology disruption requiring continuous adaptation
+## Strategic Analysis
+
+### SWOT Assessment
+
+| | Positive | Negative |
+|---|----------|----------|
+| **Internal** | **Strengths:** Strong technical foundation, experienced team, existing customer base | **Weaknesses:** Limited brand awareness, small team, constrained budget |
+| **External** | **Opportunities:** Growing market, underserved segments, technology advances | **Threats:** Well-funded competitors, market consolidation, regulatory uncertainty |
+
+### Risk Assessment
+
+| Risk | Probability | Impact | Mitigation |
+|------|------------|--------|------------|
+| Competitive entry | High | High | Accelerate unique value proposition |
+| Technical complexity | Medium | Medium | Invest in expertise and tooling |
+| Market timing | Medium | High | Phased approach with early validation |
+| Resource constraints | High | Medium | Prioritize ruthlessly, outsource non-core |
 
 ## Recommendations
-1. Invest in foundational capabilities
-2. Build strategic partnerships
-3. Develop talent and expertise
-4. Maintain agility in approach
-5. Monitor and measure outcomes continuously
+
+### Immediate Actions (0-30 days)
+1. Complete competitive audit and gap analysis
+2. Validate core assumptions with 5-10 target customers
+3. Define MVP scope and success metrics
+
+### Short-Term (30-90 days)
+4. Launch MVP with targeted early adopters
+5. Establish feedback loops and measurement framework
+6. Begin building thought leadership content
+
+### Medium-Term (90-180 days)
+7. Scale based on validated learnings
+8. Expand feature set based on user demand
+9. Explore strategic partnerships
+
+## Resource Requirements
+
+| Category | Q1 | Q2 | Q3 |
+|----------|-----|-----|-----|
+| Engineering | 3 FTE | 5 FTE | 5 FTE |
+| Design | 1 FTE | 2 FTE | 2 FTE |
+| Marketing | 1 FTE | 2 FTE | 3 FTE |
+| Budget | $XXk | $XXk | $XXk |
 
 ## Next Steps
-- Review findings with key stakeholders
-- Prioritize recommendations based on organizational capacity
-- Develop implementation timeline
-- Establish success metrics
+
+- [ ] Leadership review and approval (this week)
+- [ ] Team alignment meeting (next week)
+- [ ] Sprint planning for Phase 1 (following week)
 
 ---
-*Generated by AdvutAI Content Studio in a ${tone} tone*`,
-};
+
+*This report was generated by AdvutAI Content Studio. Data should be validated with primary research before strategic decisions.*`;
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -164,7 +332,15 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const generator = TEMPLATES[type] || TEMPLATES.blog;
+    const generators: Record<string, (p: string, t: string) => string> = {
+      blog: generateBlog,
+      email: generateEmail,
+      social: generateSocial,
+      marketing: generateMarketing,
+      report: generateReport,
+    };
+
+    const generator = generators[type] || generateBlog;
     const content = generator(prompt, tone);
 
     return new Response(
@@ -172,9 +348,9 @@ Deno.serve(async (req: Request) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Internal server error";
+    const msg = err instanceof Error ? err.message : "Internal server error";
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: msg }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

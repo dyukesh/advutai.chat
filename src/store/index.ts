@@ -177,7 +177,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   sendMessage: async (content) => {
-    const { activeChatId, isSending, selectedModel } = get();
+    const { activeChatId, isSending, selectedModel, messages } = get();
     if (!content.trim() || isSending) return;
     set({ isSending: true });
 
@@ -196,7 +196,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       set(prev => ({ messages: [...prev.messages, userMsg] }));
       await supabase.from('messages').insert(userMsg);
 
-      const isFirst = get().messages.length <= 1;
+      const isFirst = get().messages.filter(m => m.role === 'user').length <= 1;
       if (isFirst) {
         const title = content.trim().slice(0, 50) + (content.trim().length > 50 ? '...' : '');
         await supabase.from('chats').update({ title, updated_at: new Date().toISOString() }).eq('id', chatId);
@@ -210,10 +210,16 @@ export const useAppStore = create<AppState>((set, get) => ({
       };
       set(prev => ({ messages: [...prev.messages, assistantMsg] }));
 
+      // Build history from existing messages (last 20 for context)
+      const history = messages
+        .filter(m => m.content && m.role !== 'system')
+        .slice(-20)
+        .map(m => ({ role: m.role, content: m.content }));
+
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ message: content.trim(), model: selectedModel }),
+        body: JSON.stringify({ message: content.trim(), model: selectedModel, history }),
       });
 
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
