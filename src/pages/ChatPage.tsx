@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
   Send, Plus, Pin, Archive, Trash2, Search,
-  ChevronDown, MessageSquare, Sparkles, PanelLeftClose, PanelLeft
+  ChevronDown, MessageSquare, Sparkles, PanelLeftClose, PanelLeft, Info, Zap
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -31,7 +31,7 @@ export function ChatPage() {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 160) + 'px';
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
     }
   }, [input]);
 
@@ -58,118 +58,131 @@ export function ChatPage() {
 
   return (
     <div className="flex h-full bg-surface-950">
-      {/* Chat list */}
-      <div className={clsx(
-        'flex flex-col border-r border-surface-800 bg-surface-900 transition-all duration-200',
-        showChatList ? 'w-72' : 'w-0 overflow-hidden border-0'
+      {/* Sidebar - Chat List */}
+      <aside className={clsx(
+        'flex flex-col bg-surface-900/50 border-r border-surface-800/60 transition-all duration-300 ease-out',
+        showChatList ? 'w-64' : 'w-0 overflow-hidden'
       )}>
-        <div className="p-3 space-y-2">
-          <button onClick={createChat} className="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-500 text-white py-2.5 rounded-xl text-sm font-medium transition-colors">
+        <div className="p-4 space-y-3">
+          <button onClick={createChat}
+            className="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-500 active:scale-[0.98] text-white py-2.5 rounded-xl text-[13px] font-medium transition-all shadow-lg shadow-primary-600/20">
             <Plus size={16} /> New Chat
           </button>
           <div className="relative">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-500" />
             <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search chats..."
-              className="w-full bg-surface-800 border border-surface-700 rounded-lg pl-9 pr-3 py-2 text-sm text-surface-200 placeholder-surface-500 focus:border-primary-500 outline-none transition-colors" />
+              placeholder="Search..."
+              className="w-full bg-surface-800/80 border border-surface-700/50 rounded-lg pl-9 pr-3 py-2 text-[13px] text-surface-200 placeholder-surface-500 focus:border-primary-500/50 focus:bg-surface-800 outline-none transition-all" />
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-2 pb-2">
+        <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-4">
           {pinnedChats.length > 0 && (
-            <div className="mb-2">
-              <p className="px-2 py-1.5 text-[11px] font-semibold text-surface-500 uppercase tracking-widest">Pinned</p>
-              {pinnedChats.map(c => <ChatItem key={c.id} chat={c} active={c.id === activeChatId} onSelect={() => setActiveChat(c.id)} onDelete={() => deleteChat(c.id)} onPin={() => togglePinChat(c.id)} onArchive={() => toggleArchiveChat(c.id)} />)}
+            <div>
+              <p className="px-1 mb-1.5 text-[10px] font-semibold text-surface-500 uppercase tracking-wider">Pinned</p>
+              <div className="space-y-0.5">{pinnedChats.map(c => <ChatItem key={c.id} chat={c} active={c.id === activeChatId} onSelect={() => setActiveChat(c.id)} onDelete={() => deleteChat(c.id)} onPin={() => togglePinChat(c.id)} onArchive={() => toggleArchiveChat(c.id)} />)}</div>
             </div>
           )}
           {activeChats.length > 0 && (
-            <div className="mb-2">
-              <p className="px-2 py-1.5 text-[11px] font-semibold text-surface-500 uppercase tracking-widest">Recent</p>
-              {activeChats.map(c => <ChatItem key={c.id} chat={c} active={c.id === activeChatId} onSelect={() => setActiveChat(c.id)} onDelete={() => deleteChat(c.id)} onPin={() => togglePinChat(c.id)} onArchive={() => toggleArchiveChat(c.id)} />)}
+            <div>
+              <p className="px-1 mb-1.5 text-[10px] font-semibold text-surface-500 uppercase tracking-wider">Recent</p>
+              <div className="space-y-0.5">{activeChats.map(c => <ChatItem key={c.id} chat={c} active={c.id === activeChatId} onSelect={() => setActiveChat(c.id)} onDelete={() => deleteChat(c.id)} onPin={() => togglePinChat(c.id)} onArchive={() => toggleArchiveChat(c.id)} />)}</div>
             </div>
           )}
           {archivedChats.length > 0 && (
             <div>
-              <p className="px-2 py-1.5 text-[11px] font-semibold text-surface-500 uppercase tracking-widest">Archived</p>
-              {archivedChats.map(c => <ChatItem key={c.id} chat={c} active={c.id === activeChatId} onSelect={() => setActiveChat(c.id)} onDelete={() => deleteChat(c.id)} onPin={() => togglePinChat(c.id)} onArchive={() => toggleArchiveChat(c.id)} />)}
+              <p className="px-1 mb-1.5 text-[10px] font-semibold text-surface-500 uppercase tracking-wider">Archived</p>
+              <div className="space-y-0.5">{archivedChats.map(c => <ChatItem key={c.id} chat={c} active={c.id === activeChatId} onSelect={() => setActiveChat(c.id)} onDelete={() => deleteChat(c.id)} onPin={() => togglePinChat(c.id)} onArchive={() => toggleArchiveChat(c.id)} />)}</div>
             </div>
           )}
           {!pinnedChats.length && !activeChats.length && !archivedChats.length && (
-            <div className="text-center py-8 px-4">
-              <MessageSquare size={24} className="mx-auto text-surface-700 mb-2" />
-              <p className="text-sm text-surface-500">No conversations yet</p>
+            <div className="text-center py-10">
+              <MessageSquare size={28} className="mx-auto text-surface-700 mb-3" />
+              <p className="text-[13px] text-surface-500">No conversations yet</p>
             </div>
           )}
         </div>
-      </div>
 
-      {/* Main area */}
+        {/* Demo Mode Notice */}
+        <div className="mx-3 mb-3 p-3 rounded-lg bg-warning-500/10 border border-warning-500/20">
+          <div className="flex items-start gap-2">
+            <Info size={14} className="text-warning-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[11px] font-medium text-warning-300">Demo Mode</p>
+              <p className="text-[10px] text-surface-500 mt-0.5 leading-relaxed">AI responses are simulated. Add an OpenAI API key in settings for real responses.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex items-center gap-3 px-4 h-12 border-b border-surface-800/60 bg-surface-950">
-          <button onClick={() => setShowChatList(!showChatList)} className="p-1.5 rounded-lg hover:bg-surface-800 text-surface-400 hover:text-surface-200 transition-colors">
-            {showChatList ? <PanelLeftClose size={18} /> : <PanelLeft size={18} />}
+        <header className="flex items-center gap-3 px-4 h-11 border-b border-surface-800/40 bg-surface-950/80 backdrop-blur-sm">
+          <button onClick={() => setShowChatList(!showChatList)}
+            className="p-1.5 rounded-lg hover:bg-surface-800/60 text-surface-500 hover:text-surface-300 transition-colors">
+            {showChatList ? <PanelLeftClose size={16} /> : <PanelLeft size={16} />}
           </button>
-          <div className="flex-1 text-sm font-medium text-surface-300 truncate">
-            {chats.find(c => c.id === activeChatId)?.title || 'New Chat'}
+          <div className="flex-1 text-[13px] font-medium text-surface-400 truncate">
+            {chats.find(c => c.id === activeChatId)?.title || 'New Conversation'}
           </div>
-          {/* Model picker */}
+
+          {/* Model Picker */}
           <div className="relative">
             <button onClick={() => setShowModelPicker(!showModelPicker)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/80 hover:bg-surface-800 border border-surface-700/50 text-sm transition-colors">
-              <div className={clsx('w-2 h-2 rounded-full',
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/60 hover:bg-surface-800 border border-surface-700/40 text-[13px] transition-colors">
+              <span className={clsx('w-2 h-2 rounded-full',
                 currentModel?.provider === 'OpenAI' ? 'bg-green-400' :
                 currentModel?.provider === 'Anthropic' ? 'bg-orange-400' :
                 currentModel?.provider === 'Google' ? 'bg-blue-400' :
-                currentModel?.provider === 'DeepSeek' ? 'bg-cyan-400' :
-                currentModel?.provider === 'xAI' ? 'bg-surface-300' :
                 'bg-primary-400'
               )} />
-              <span className="text-surface-200">{currentModel?.name || selectedModel}</span>
+              <span className="text-surface-300">{currentModel?.name}</span>
               <ChevronDown size={12} className="text-surface-500" />
             </button>
+
             {showModelPicker && (
-              <div className="absolute right-0 top-full mt-1 w-80 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl z-50 py-1 max-h-96 overflow-y-auto">
-                {['OpenAI', 'Anthropic', 'Google', 'DeepSeek', 'xAI', 'Mistral'].map(provider => {
-                  const models = AI_MODELS.filter(m => m.provider === provider);
-                  if (!models.length) return null;
-                  return (
-                    <div key={provider}>
-                      <p className="px-3 py-2 text-[11px] font-semibold text-surface-500 uppercase tracking-widest">{provider}</p>
-                      {models.map(m => (
-                        <button key={m.id} onClick={() => { setSelectedModel(m.id); setShowModelPicker(false); }}
-                          className={clsx('w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-surface-800 transition-colors',
-                            selectedModel === m.id ? 'text-primary-400 bg-primary-600/5' : 'text-surface-300'
-                          )}>
-                          <div className={clsx('w-2 h-2 rounded-full flex-shrink-0',
-                            provider === 'OpenAI' ? 'bg-green-400' :
-                            provider === 'Anthropic' ? 'bg-orange-400' :
-                            provider === 'Google' ? 'bg-blue-400' :
-                            provider === 'DeepSeek' ? 'bg-cyan-400' :
-                            provider === 'xAI' ? 'bg-surface-300' :
-                            'bg-primary-400'
-                          )} />
-                          <div className="flex-1 min-w-0">
-                            <span className="font-medium">{m.name}</span>
-                            <p className="text-xs text-surface-500">{m.description}</p>
-                          </div>
-                          {selectedModel === m.id && <div className="w-1.5 h-1.5 rounded-full bg-primary-400" />}
-                        </button>
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowModelPicker(false)} />
+                <div className="absolute right-0 top-full mt-1 w-72 bg-surface-900 border border-surface-700/60 rounded-xl shadow-2xl z-50 py-1.5 max-h-80 overflow-y-auto">
+                  {['OpenAI', 'Anthropic', 'Google', 'DeepSeek', 'xAI', 'Mistral'].map(provider => {
+                    const models = AI_MODELS.filter(m => m.provider === provider);
+                    if (!models.length) return null;
+                    return (
+                      <div key={provider}>
+                        <p className="px-3 py-1.5 text-[10px] font-bold text-surface-500 uppercase tracking-wider">{provider}</p>
+                        {models.map(m => (
+                          <button key={m.id} onClick={() => { setSelectedModel(m.id); setShowModelPicker(false); }}
+                            className={clsx('w-full text-left px-3 py-2 text-[13px] hover:bg-surface-800/60 transition-colors',
+                              selectedModel === m.id ? 'bg-primary-600/10 text-primary-400' : 'text-surface-300'
+                            )}>
+                            <div className="flex items-center gap-2">
+                              <span className={clsx('w-1.5 h-1.5 rounded-full',
+                                provider === 'OpenAI' ? 'bg-green-400' :
+                                provider === 'Anthropic' ? 'bg-orange-400' :
+                                provider === 'Google' ? 'bg-blue-400' :
+                                'bg-primary-400'
+                              )} />
+                              <span className="font-medium">{m.name}</span>
+                            </div>
+                            <p className="text-[11px] text-surface-500 mt-0.5 ml-3.5">{m.description}</p>
+                          </button>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
-        </div>
+        </header>
 
-        {/* Messages area */}
+        {/* Messages Area */}
         <div className="flex-1 overflow-y-auto">
           {!activeChatId ? (
             <WelcomeScreen onNewChat={createChat} onSuggestionClick={sendMessage} />
           ) : (
-            <div className="max-w-3xl mx-auto px-4 py-6 space-y-1">
+            <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
               {messages.map((msg) => (
                 <MessageBubble key={msg.id} message={msg} />
               ))}
@@ -178,49 +191,54 @@ export function ChatPage() {
           )}
         </div>
 
-        {/* Input */}
+        {/* Input Area */}
         <div className="px-4 pb-4 pt-2">
-          <div className="max-w-3xl mx-auto">
-            <div className="flex items-end gap-2 bg-surface-900 border border-surface-700/50 rounded-2xl px-4 py-3 focus-within:border-primary-500/50 focus-within:shadow-lg focus-within:shadow-primary-500/5 transition-all">
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-end gap-2 bg-surface-900/80 border border-surface-700/40 rounded-2xl px-4 py-2.5 focus-within:border-primary-500/40 focus-within:bg-surface-900 transition-all">
               <textarea ref={textareaRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKeyDown}
-                placeholder="Message AdvutAI..." rows={1} disabled={isSending}
-                className="flex-1 bg-transparent text-sm text-surface-100 placeholder-surface-500 resize-none outline-none min-h-[24px] max-h-[160px] py-0.5 leading-relaxed" />
+                placeholder="Message AdvutAI..." rows={1}
+                className="flex-1 bg-transparent text-[13px] text-surface-100 placeholder-surface-500 resize-none outline-none min-h-[20px] max-h-[120px] leading-relaxed py-0.5" />
               <button onClick={handleSend} disabled={!input.trim() || isSending}
-                className={clsx('p-2 rounded-xl transition-all flex-shrink-0',
-                  input.trim() && !isSending ? 'bg-primary-600 text-white hover:bg-primary-500 shadow-lg shadow-primary-600/20' : 'bg-surface-800 text-surface-500'
+                className={clsx('flex-shrink-0 p-2 rounded-xl transition-all',
+                  input.trim() && !isSending
+                    ? 'bg-primary-600 text-white hover:bg-primary-500 shadow-lg shadow-primary-600/20'
+                    : 'bg-surface-800/50 text-surface-600'
                 )}>
                 <Send size={16} />
               </button>
             </div>
-            <p className="text-center text-[11px] text-surface-600 mt-2">AdvutAI can make mistakes. Consider checking important information.</p>
+            <p className="text-center text-[10px] text-surface-600 mt-2">
+              Demo mode: Responses are simulated for demonstration.
+            </p>
           </div>
         </div>
       </div>
-
-      {showModelPicker && <div className="fixed inset-0 z-40" onClick={() => setShowModelPicker(false)} />}
     </div>
   );
 }
 
 function ChatItem({ chat, active, onSelect, onDelete, onPin, onArchive }: {
-  chat: { id: string; title: string; pinned: boolean; archived: boolean; updated_at: string };
+  chat: { id: string; title: string; pinned: boolean; archived: boolean };
   active: boolean; onSelect: () => void; onDelete: () => void; onPin: () => void; onArchive: () => void;
 }) {
   return (
-    <div onClick={onSelect} className={clsx(
-      'group flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-all',
-      active ? 'bg-surface-800 text-surface-100' : 'text-surface-400 hover:bg-surface-800/40 hover:text-surface-200'
-    )}>
-      <MessageSquare size={14} className="flex-shrink-0 opacity-50" />
-      <span className="flex-1 text-sm truncate">{chat.title}</span>
+    <div onClick={onSelect}
+      className={clsx('group flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer transition-colors',
+        active ? 'bg-surface-800/70 text-surface-100' : 'text-surface-400 hover:bg-surface-800/40 hover:text-surface-200'
+      )}>
+      <MessageSquare size={13} className="flex-shrink-0 opacity-50" />
+      <span className="flex-1 text-[13px] truncate">{chat.title}</span>
       <div className="hidden group-hover:flex items-center gap-0.5">
-        <button onClick={e => { e.stopPropagation(); onPin(); }} className="p-1 rounded hover:bg-surface-700 text-surface-500 hover:text-primary-400 transition-colors" title={chat.pinned ? 'Unpin' : 'Pin'}>
+        <button onClick={e => { e.stopPropagation(); onPin(); }}
+          className="p-1 rounded hover:bg-surface-700 text-surface-500 hover:text-primary-400 transition-colors">
           <Pin size={11} />
         </button>
-        <button onClick={e => { e.stopPropagation(); onArchive(); }} className="p-1 rounded hover:bg-surface-700 text-surface-500 hover:text-warning-400 transition-colors" title="Archive">
+        <button onClick={e => { e.stopPropagation(); onArchive(); }}
+          className="p-1 rounded hover:bg-surface-700 text-surface-500 hover:text-warning-400 transition-colors">
           <Archive size={11} />
         </button>
-        <button onClick={e => { e.stopPropagation(); onDelete(); }} className="p-1 rounded hover:bg-surface-700 text-surface-500 hover:text-error-400 transition-colors" title="Delete">
+        <button onClick={e => { e.stopPropagation(); onDelete(); }}
+          className="p-1 rounded hover:bg-surface-700 text-surface-500 hover:text-error-400 transition-colors">
           <Trash2 size={11} />
         </button>
       </div>
@@ -233,8 +251,8 @@ function MessageBubble({ message }: { message: { id: string; role: string; conte
 
   if (isUser) {
     return (
-      <div className="flex justify-end mb-4 animate-fade-in">
-        <div className="max-w-[75%] bg-primary-600 text-white px-4 py-3 rounded-2xl rounded-br-md text-sm leading-relaxed">
+      <div className="flex justify-end">
+        <div className="max-w-[80%] bg-primary-600 text-white px-4 py-2.5 rounded-2xl rounded-br-md text-[13px] leading-relaxed">
           <p className="whitespace-pre-wrap">{message.content}</p>
         </div>
       </div>
@@ -243,33 +261,31 @@ function MessageBubble({ message }: { message: { id: string; role: string; conte
 
   if (!message.content) {
     return (
-      <div className="flex justify-start mb-4">
-        <div className="flex items-center gap-2 px-4 py-3">
-          <div className="w-6 h-6 rounded-lg bg-surface-800 border border-surface-700 flex items-center justify-center">
-            <Sparkles size={12} className="text-primary-400" />
-          </div>
-          <div className="flex gap-1.5">
-            <span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" />
-          </div>
+      <div className="flex items-center gap-2 px-1">
+        <div className="w-6 h-6 rounded-lg bg-surface-800 border border-surface-700/50 flex items-center justify-center">
+          <Sparkles size={11} className="text-primary-400" />
+        </div>
+        <div className="flex gap-1">
+          <span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-start mb-4 animate-fade-in">
-      <div className="max-w-[85%]">
-        <div className="flex items-center gap-2 mb-1.5">
-          <div className="w-5 h-5 rounded-md bg-surface-800 border border-surface-700 flex items-center justify-center">
-            <Sparkles size={10} className="text-primary-400" />
-          </div>
-          <span className="text-[11px] font-medium text-surface-500">AdvutAI</span>
-          {message.model && <span className="text-[10px] text-surface-600 bg-surface-800 px-1.5 py-0.5 rounded">{message.model}</span>}
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-6 h-6 rounded-lg bg-surface-800/80 border border-surface-700/50 flex items-center justify-center">
+          <Sparkles size={11} className="text-primary-400" />
         </div>
-        <div className="bg-surface-900/50 border border-surface-800/40 rounded-2xl rounded-tl-md px-5 py-4">
-          <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-headings:my-3 prose-headings:text-surface-200 prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-strong:text-primary-300 prose-code:text-primary-300 prose-code:bg-surface-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[13px] prose-code:before:content-[''] prose-code:after:content-[''] prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-800">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
-          </div>
+        <span className="text-[12px] font-medium text-surface-400">AdvutAI</span>
+        {message.model && (
+          <span className="text-[10px] text-surface-500 bg-surface-800/60 px-2 py-0.5 rounded-full">{message.model}</span>
+        )}
+      </div>
+      <div className="bg-surface-900/50 border border-surface-800/50 rounded-xl rounded-tl-none px-4 py-3">
+        <div className="prose prose-sm max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
         </div>
       </div>
     </div>
@@ -278,32 +294,40 @@ function MessageBubble({ message }: { message: { id: string; role: string; conte
 
 function WelcomeScreen({ onNewChat, onSuggestionClick }: { onNewChat: () => void; onSuggestionClick: (text: string) => void }) {
   const suggestions = [
-    { label: 'Write code', text: 'Help me build a REST API with authentication in Node.js', emoji: '{ }' },
-    { label: 'Analyze data', text: 'Analyze the key trends in the SaaS market for 2025', emoji: '#' },
-    { label: 'Debug issue', text: 'I have a React component that re-renders infinitely, help me find the cause', emoji: '?' },
-    { label: 'Write content', text: 'Draft a professional email proposing a new project timeline to stakeholders', emoji: '@' },
+    { title: 'Write code', desc: 'Build a REST API with authentication', prompt: 'Help me build a REST API with JWT authentication in Node.js and Express' },
+    { title: 'Analyze data', desc: 'SaaS market trends for 2025', prompt: 'Analyze the key trends in the SaaS market for 2025' },
+    { title: 'Debug issue', desc: 'Fix infinite re-render', prompt: 'I have a React component that re-renders infinitely. Help me find and fix the cause.' },
+    { title: 'Create content', desc: 'Draft professional email', prompt: 'Draft a professional email proposing a new project timeline to stakeholders' },
   ];
 
   return (
     <div className="flex items-center justify-center h-full px-4">
-      <div className="text-center max-w-lg">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-400 mb-5 animate-float shadow-lg shadow-primary-500/20">
-          <Sparkles size={24} className="text-white" />
+      <div className="text-center max-w-md">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-400 mb-4 shadow-lg shadow-primary-500/20 animate-float">
+          <Sparkles size={22} className="text-white" />
         </div>
-        <h1 className="text-2xl font-bold text-surface-50 mb-2">What can I help you with?</h1>
-        <p className="text-surface-400 text-sm mb-8">Start a conversation or try a suggestion below</p>
-        <button onClick={onNewChat} className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors mb-8 shadow-lg shadow-primary-600/20">
+
+        <h1 className="text-xl font-semibold text-surface-100 mb-1">How can I help you?</h1>
+        <p className="text-[13px] text-surface-500 mb-6">Start a conversation or try a suggestion below</p>
+
+        <button onClick={onNewChat}
+          className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-500 active:scale-[0.98] text-white px-5 py-2.5 rounded-xl text-[13px] font-medium transition-all shadow-lg shadow-primary-600/20 mb-6">
           <Plus size={16} /> New Chat
         </button>
-        <div className="grid grid-cols-2 gap-3 text-left">
+
+        <div className="grid grid-cols-2 gap-2.5">
           {suggestions.map((s, i) => (
-            <button key={i} onClick={() => onSuggestionClick(s.text)}
-              className="flex flex-col items-start gap-1.5 p-4 bg-surface-900/50 border border-surface-800/50 rounded-xl hover:bg-surface-800/50 hover:border-surface-700/50 transition-all group">
-              <span className="text-primary-400/70 font-mono text-sm group-hover:text-primary-400 transition-colors">{s.emoji}</span>
-              <span className="text-sm font-medium text-surface-200 group-hover:text-surface-100 transition-colors">{s.label}</span>
-              <span className="text-xs text-surface-500 line-clamp-2">{s.text}</span>
+            <button key={i} onClick={() => onSuggestionClick(s.prompt)}
+              className="text-left p-3.5 bg-surface-900/40 border border-surface-800/50 rounded-xl hover:bg-surface-800/50 hover:border-surface-700/50 transition-all group">
+              <p className="text-[13px] font-medium text-surface-200 group-hover:text-primary-400 transition-colors">{s.title}</p>
+              <p className="text-[11px] text-surface-500 mt-0.5">{s.desc}</p>
             </button>
           ))}
+        </div>
+
+        <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-surface-600">
+          <Zap size={12} />
+          <span>Demo mode — simulated responses for demonstration</span>
         </div>
       </div>
     </div>
