@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
   Send, Plus, Pin, Archive, Trash2, Search,
-  ChevronDown, MessageSquare, Sparkles, PanelLeftClose, PanelLeft, Info, Zap
+  ChevronDown, MessageSquare, Sparkles, PanelLeftClose, PanelLeft, Zap
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -103,13 +103,13 @@ export function ChatPage() {
           )}
         </div>
 
-        {/* Demo Mode Notice */}
-        <div className="mx-3 mb-3 p-3 rounded-lg bg-warning-500/10 border border-warning-500/20">
+        {/* Status */}
+        <div className="mx-3 mb-3 p-3 rounded-lg bg-success-500/10 border border-success-500/20">
           <div className="flex items-start gap-2">
-            <Info size={14} className="text-warning-400 flex-shrink-0 mt-0.5" />
+            <Zap size={14} className="text-success-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[11px] font-medium text-warning-300">Demo Mode</p>
-              <p className="text-[10px] text-surface-500 mt-0.5 leading-relaxed">AI responses are simulated. Add an OpenAI API key in settings for real responses.</p>
+              <p className="text-[11px] font-medium text-success-300">AI Connected</p>
+              <p className="text-[10px] text-surface-500 mt-0.5 leading-relaxed">Powered by OpenAI GPT-4o for real AI responses.</p>
             </div>
           </div>
         </div>
@@ -208,7 +208,7 @@ export function ChatPage() {
               </button>
             </div>
             <p className="text-center text-[10px] text-surface-600 mt-2">
-              Demo mode: Responses are simulated for demonstration.
+              Press Enter to send, Shift+Enter for new line
             </p>
           </div>
         </div>
@@ -326,8 +326,8 @@ function WelcomeScreen({ onNewChat, onSuggestionClick }: { onNewChat: () => void
         </div>
 
         <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-surface-600">
-          <Zap size={12} />
-          <span>Demo mode — simulated responses for demonstration</span>
+          <Zap size={12} className="text-success-400" />
+          <span>AI Connected — Real responses powered by OpenAI</span>
         </div>
       </div>
     </div>
