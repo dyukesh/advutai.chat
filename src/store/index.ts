@@ -216,9 +216,16 @@ export const useAppStore = create<AppState>((set, get) => ({
         .slice(-20)
         .map(m => ({ role: m.role, content: m.content }));
 
+      const userApiKey = localStorage.getItem('openai_api_key') ?? '';
+      const chatHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      };
+      if (userApiKey) chatHeaders['X-User-Api-Key'] = userApiKey;
+
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+        headers: chatHeaders,
         body: JSON.stringify({ message: content.trim(), model: selectedModel, history }),
       });
 

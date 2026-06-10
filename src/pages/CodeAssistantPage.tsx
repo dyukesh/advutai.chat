@@ -25,9 +25,16 @@ export function CodeAssistantPage() {
     if (!prompt.trim()) return;
     setIsGenerating(true);
     try {
+      const userApiKey = localStorage.getItem('openai_api_key') ?? '';
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      };
+      if (userApiKey) headers['X-User-Api-Key'] = userApiKey;
+
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/code`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+        headers,
         body: JSON.stringify({ prompt: prompt.trim(), language, mode }),
       });
       if (!res.ok) throw new Error('Generation failed');
